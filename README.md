@@ -1,5 +1,5 @@
 # 휴양소_예약시스템
-![image](https://user-images.githubusercontent.com/85722851/124374642-1a773a00-dcd8-11eb-853c-e54fc79df166.jpg)
+![image](https://user-images.githubusercontent.com/85722729/124409014-75656b80-dd82-11eb-9a56-672bc90270ad.jpg)
 
 
 
