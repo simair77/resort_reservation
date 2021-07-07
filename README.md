@@ -136,7 +136,7 @@
 ![image](https://user-images.githubusercontent.com/85722729/124700296-7257b000-df27-11eb-8f13-a79097b9d284.png)
 
 ### 어그리게잇으로 묶기
-![image](https://user-images.githubusercontent.com/85722729/124701153-0b3afb00-df29-11eb-89ff-bfbc2dcb9b9c.png)
+![image](https://user-images.githubusercontent.com/85722729/124701094-e8a8e200-df28-11eb-9192-d52b2a07cb82.png)
 
 ### 바운디드 컨텍스트로 묶기
 
