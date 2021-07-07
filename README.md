@@ -152,7 +152,7 @@
 
 ### 완성된 모형
 
-![image](8.	https://user-images.githubusercontent.com/85 722729/124701475-9f0cc700-df29-11eb-9eb9-dc0c74df7049.png)
+![image](https://user-images.githubusercontent.com/85722729/124701475-9f0cc700-df29-11eb-9eb9-dc0c74df7049.png)
 
     - View Model 추가
 
