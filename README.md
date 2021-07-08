@@ -183,9 +183,84 @@ http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.co
 ## Deploy
 ![image](https://user-images.githubusercontent.com/85722851/124926911-02d1e580-e039-11eb-881c-2f0822aaaee1.png)
 
-## DDD 의 적용
 
-- 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: (예시는 pay 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다. 하지만, 일부 구현에 있어서 영문이 아닌 경우는 실행이 불가능한 경우가 있기 때문에 계속 사용할 방법은 아닌것 같다. (Maven pom.xml, Kafka의 topic id, FeignClient 의 서비스 id 등은 한글로 식별자를 사용하는 경우 오류가 발생하는 것을 확인하였다)
+
+## DDD 의 적용
+- 위 이벤트 스토밍을 통해 식별된 Micro Service 전체 5개 중 3개를 구현하였으며 그 중 mypage는 CQRS를 위한 서비스이다.
+
+|MSA|기능|port|URL|
+| :--: | :--: | :--: | :--: |
+|reservation| 예약정보 관리 |8081|http://localhost:8081/reservations|
+|resort| 리조트 관리 |8082|http://localhost:8082/resorts|
+|mypage| 예매내역 조회 |8083|http://localhost:8086/mypages|
+|gateway| gateway |8088|http://localhost:8088|
+
+## Gateway 적용
+- API GateWay를 통하여 마이크로 서비스들의 진입점을 통일할 수 있다. 
+다음과 같이 GateWay를 적용하였다.
+
+```yaml
+server:
+  port: 8088
+---
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: reservation
+          uri: http://localhost:8081
+          predicates:
+            - Path=/reservations/** 
+        - id: resort
+          uri: http://localhost:8082
+          predicates:
+            - Path=/resorts/** 
+        - id: mypage
+          uri: http://localhost:8083
+          predicates:
+            - Path= /myPages/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+---
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: reservation
+          uri: http://reservation:8080
+          predicates:
+            - Path=/reservations/** 
+        - id: resort
+          uri: http://resort:8080
+          predicates:
+            - Path=/resorts/** 
+        - id: mypage
+          uri: http://mypage:8080
+          predicates:
+            - Path= /myPages/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+server:
+  port: 8080
+```
 
 ```java
 
