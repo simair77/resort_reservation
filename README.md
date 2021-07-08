@@ -276,57 +276,55 @@ server:
 
 ## 동기식 호출 과 Fallback 처리
 
-분석단계에서의 조건 중 하나로 주문(app)->결제(pay) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient 를 이용하여 호출하도록 한다. 
+- 분석단계에서의 조건 중 하나로 예약(reservation)->리조트상태확인(resort) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient를 이용하여 호출하였다
 
-- 결제서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
+- 리조트서비스를 호출하기 위하여 Stub과 (FeignClient) 를 이용하여 Service 대행 인터페이스 (Proxy) 를 구현 
 
-```
-# (app) 결제이력Service.java
+```java
+# (reservation) ResortService.java
 
-package fooddelivery.external;
+package resortreservation.external;
 
-@FeignClient(name="pay", url="http://localhost:8082")//, fallback = 결제이력ServiceFallback.class)
-public interface 결제이력Service {
-
-    @RequestMapping(method= RequestMethod.POST, path="/결제이력s")
-    public void 결제(@RequestBody 결제이력 pay);
+@FeignClient(name="resort", url="${feign.resort.url}")
+public interface ResortService {
+    
+    @RequestMapping(method= RequestMethod.GET, value="/resorts/{id}", consumes = "application/json")
+    public Resort getResortStatus(@PathVariable("id") Long id);
 
 }
 ```
 
-- 주문을 받은 직후(@PostPersist) 결제를 요청하도록 처리
+- 예약을 처리 하기 직전(@PrePersist)에 ResortSevice를 호출하여 서비스 상태와 Resort 세부정도르 가져온다.
 ```
-# Order.java (Entity)
+# Reservation.java (Entity)
 
-    @PostPersist
-    public void onPostPersist(){
+    @PrePersist
+    public void onPrePersist() throws Exception {
+        resortreservation.external.Resort resort = new resortreservation.external.Resort();
+       
+        //Resort 서비스에서 Resort의 상태를 가져옴
+        resort = ReservationApplication.applicationContext.getBean(resortreservation.external.ResortService.class)
+            .getResortStatus(resortId);
 
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
+        // 예약 가능상태 여부에 따라 처리
+        if ("Available".equals(resort.getResortStatus())){
+            this.setResortName(resort.getResortName());
+            this.setResortPeriod(resort.getResortPeriod());
+            this.setResortPrice(resort.getResortPrice());
+            this.setResortType(resort.getResortType());
+            this.setResortStatus("Confirmed");
+            ReservationRegistered reservationRegistered = new ReservationRegistered();
+            BeanUtils.copyProperties(this, reservationRegistered);
+            reservationRegistered.publishAfterCommit();
+        } else {
+            throw new Exception("The resort is not in a usable status.");
+        }
     }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+![image](https://user-images.githubusercontent.com/85722851/124935086-47ad4a80-e040-11eb-99d1-eb20f47f1eb8.png)
 
-
-```
-# 결제 (pay) 서비스를 잠시 내려놓음 (ctrl+c)
-
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Fail
-http localhost:8081/orders item=피자 storeId=2   #Fail
-
-#결제서비스 재기동
-cd 결제
-mvn spring-boot:run
-
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
-```
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
 
