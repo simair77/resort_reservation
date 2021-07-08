@@ -121,8 +121,8 @@
   ![image](https://user-images.githubusercontent.com/487999/79684144-2a893200-826a-11ea-9a01-79927d3a0107.png)
 
 ## TO-BE 조직 (Vertically-Aligned)
-***수정예정
-  ![image](https://user-images.githubusercontent.com/487999/79684159-3543c700-826a-11ea-8d5f-a3fc0c4cad87.png)
+
+  ![image](https://user-images.githubusercontent.com/85722729/124853388-c377aa80-dfe0-11eb-8732-52a9213742a4.png)
 
 
 ## Event Storming 결과
@@ -148,17 +148,17 @@
 
 ### 폴리시의 이동과 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
 
-![image](https://user-images.githubusercontent.com/85722729/124701398-784e9080-df29-11eb-97df-24925793ad8d.png)
+![image](https://user-images.githubusercontent.com/85722729/124852892-f1a8ba80-dfdf-11eb-85e3-5befa1deea4b.png)
 
 ### 완성된 모형
 
-![image](https://user-images.githubusercontent.com/85722729/124701475-9f0cc700-df29-11eb-9eb9-dc0c74df7049.png)
+![image](8.	https://user-images.githubusercontent.com/85722729/124852988-17ce5a80-dfe0-11eb-8681-937ca7875a60.png)
 
     - View Model 추가
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
-![image](https://user-images.githubusercontent.com/487999/79684772-eba9ab00-826e-11ea-9405-17e2bf39ec76.png)
+![image](https://user-images.githubusercontent.com/85722729/124853229-801d3c00-dfe0-11eb-9a1a-f921ef8a43ae.png)
 
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
