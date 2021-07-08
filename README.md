@@ -55,62 +55,7 @@
     1. 배달상태가 바뀔때마다 카톡 등으로 알림을 줄 수 있어야 한다  Event driven
 
 
-# 체크포인트
 
-- 분석 설계
-
-
-  - 이벤트스토밍: 
-    - 스티커 색상별 객체의 의미를 제대로 이해하여 헥사고날 아키텍처와의 연계 설계에 적절히 반영하고 있는가?
-    - 각 도메인 이벤트가 의미있는 수준으로 정의되었는가?
-    - 어그리게잇: Command와 Event 들을 ACID 트랜잭션 단위의 Aggregate 로 제대로 묶었는가?
-    - 기능적 요구사항과 비기능적 요구사항을 누락 없이 반영하였는가?    
-
-  - 서브 도메인, 바운디드 컨텍스트 분리
-    - 팀별 KPI 와 관심사, 상이한 배포주기 등에 따른  Sub-domain 이나 Bounded Context 를 적절히 분리하였고 그 분리 기준의 합리성이 충분히 설명되는가?
-      - 적어도 3개 이상 서비스 분리
-    - 폴리글랏 설계: 각 마이크로 서비스들의 구현 목표와 기능 특성에 따른 각자의 기술 Stack 과 저장소 구조를 다양하게 채택하여 설계하였는가?
-    - 서비스 시나리오 중 ACID 트랜잭션이 크리티컬한 Use 케이스에 대하여 무리하게 서비스가 과다하게 조밀히 분리되지 않았는가?
-  - 컨텍스트 매핑 / 이벤트 드리븐 아키텍처 
-    - 업무 중요성과  도메인간 서열을 구분할 수 있는가? (Core, Supporting, General Domain)
-    - Request-Response 방식과 이벤트 드리븐 방식을 구분하여 설계할 수 있는가?
-    - 장애격리: 서포팅 서비스를 제거 하여도 기존 서비스에 영향이 없도록 설계하였는가?
-    - 신규 서비스를 추가 하였을때 기존 서비스의 데이터베이스에 영향이 없도록 설계(열려있는 아키택처)할 수 있는가?
-    - 이벤트와 폴리시를 연결하기 위한 Correlation-key 연결을 제대로 설계하였는가?
-
-  - 헥사고날 아키텍처
-    - 설계 결과에 따른 헥사고날 아키텍처 다이어그램을 제대로 그렸는가?
-    
-- 구현
-  - [DDD] 분석단계에서의 스티커별 색상과 헥사고날 아키텍처에 따라 구현체가 매핑되게 개발되었는가?
-    - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 데이터 접근 어댑터를 개발하였는가
-    - [헥사고날 아키텍처] REST Inbound adaptor 이외에 gRPC 등의 Inbound Adaptor 를 추가함에 있어서 도메인 모델의 손상을 주지 않고 새로운 프로토콜에 기존 구현체를 적응시킬 수 있는가?
-    - 분석단계에서의 유비쿼터스 랭귀지 (업무현장에서 쓰는 용어) 를 사용하여 소스코드가 서술되었는가?
-  - Request-Response 방식의 서비스 중심 아키텍처 구현
-    - 마이크로 서비스간 Request-Response 호출에 있어 대상 서비스를 어떠한 방식으로 찾아서 호출 하였는가? (Service Discovery, REST, FeignClient)
-    - 서킷브레이커를 통하여  장애를 격리시킬 수 있는가?
-  - 이벤트 드리븐 아키텍처의 구현
-    - 카프카를 이용하여 PubSub 으로 하나 이상의 서비스가 연동되었는가?
-    - Correlation-key:  각 이벤트 건 (메시지)가 어떠한 폴리시를 처리할때 어떤 건에 연결된 처리건인지를 구별하기 위한 Correlation-key 연결을 제대로 구현 하였는가?
-    - Message Consumer 마이크로서비스가 장애상황에서 수신받지 못했던 기존 이벤트들을 다시 수신받아 처리하는가?
-    - Scaling-out: Message Consumer 마이크로서비스의 Replica 를 추가했을때 중복없이 이벤트를 수신할 수 있는가
-    - CQRS: Materialized View 를 구현하여, 타 마이크로서비스의 데이터 원본에 접근없이(Composite 서비스나 조인SQL 등 없이) 도 내 서비스의 화면 구성과 잦은 조회가 가능한가?
-
-  - 폴리글랏 플로그래밍
-    - 각 마이크로 서비스들이 하나이상의 각자의 기술 Stack 으로 구성되었는가?
-    - 각 마이크로 서비스들이 각자의 저장소 구조를 자율적으로 채택하고 각자의 저장소 유형 (RDB, NoSQL, File System 등)을 선택하여 구현하였는가?
-  - API 게이트웨이
-    - API GW를 통하여 마이크로 서비스들의 집입점을 통일할 수 있는가?
-    - 게이트웨이와 인증서버(OAuth), JWT 토큰 인증을 통하여 마이크로서비스들을 보호할 수 있는가?
-- 운영
-  - SLA 준수
-    - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
-    - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
-    - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
-    - 모니터링, 앨럿팅: 
-  - 무정지 운영 CI/CD (10)
-    - Readiness Probe 의 설정과 Rolling update을 통하여 신규 버전이 완전히 서비스를 받을 수 있는 상태일때 신규버전의 서비스로 전환됨을 siege 등으로 증명 
-    - Contract Test :  자동화된 경계 테스트를 통하여 구현 오류나 API 계약위반를 미리 차단 가능한가?
 
 
 # 분석/설계
@@ -183,6 +128,56 @@ mvn spring-boot:run
 cd customer
 python policy-handler.py 
 ```
+
+## 시나리오에 따른 처리
+1. 휴양소 관리자는 휴양소를 등록한다.
+```
+http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Jeju" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
+http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Seoul" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
+http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts
+```
+![image](https://user-images.githubusercontent.com/85722851/124924911-e2a12700-e036-11eb-8ed3-6bb5d27a1f7d.png)
+3. 고객이 휴양소를 선택하여 예약한다.
+```
+http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/reservations resortId=2 memberName="sim sang joon"
+```
+![image](https://user-images.githubusercontent.com/85722851/124925247-357ade80-e037-11eb-877b-37d53c3c71ed.png)
+
+4. 예약이 확정되어 휴양소는 예약불가 상태로 바뀐다.
+```
+http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
+```
+![image](https://user-images.githubusercontent.com/85722851/124925427-62c78c80-e037-11eb-8903-d57d1f840afc.png)
+
+5. 고객이 확정된 예약을 취소할 수 있다.
+```
+http PATCH a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/reservations/1 resortStatus="Cancelled"
+```
+![image](https://user-images.githubusercontent.com/85722851/124925543-81c61e80-e037-11eb-835d-9f34f1418a01.png)
+
+6. 휴양소는 예약 가능상태로 바뀐다.
+```
+http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
+```
+![image](https://user-images.githubusercontent.com/85722851/124925643-9e625680-e037-11eb-90ad-24f8e5264d87.png)
+
+7. 고객은 휴양소 예약 정보를 확인 할 수 있다.
+```
+http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/myPages
+```
+![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
+
+
+## Kafka
+```
+{"eventType":"ResortRegistrated","timestamp":"20210708122609","id":1,"resortName":"Jeju","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
+{"eventType":"ResortRegistrated","timestamp":"20210708122632","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
+{"eventType":"ReservationRegistered","timestamp":"20210708122821","id":null,"resortId":2,"resortName":"Seoul","resortStatus":"Confirmed","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
+{"eventType":"ResortStatusChanged","timestamp":"20210708122821","id":2,"resortName":"Seoul","resortStatus":"Not Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
+{"eventType":"ReservationCanceled","timestamp":"20210708122846","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Cancelled","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
+{"eventType":"ResortStatusChanged","timestamp":"20210708122846","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
+```
+![image](https://user-images.githubusercontent.com/85722851/124926078-14ff5400-e038-11eb-86f9-5397eb39e319.png)
 
 ## DDD 의 적용
 
@@ -844,5 +839,60 @@ Request/Response 방식으로 구현하지 않았기 때문에 서비스가 더�
         **/
     }
 ```
+# 체크포인트
 
+- 분석 설계
+
+
+  - 이벤트스토밍: 
+    - 스티커 색상별 객체의 의미를 제대로 이해하여 헥사고날 아키텍처와의 연계 설계에 적절히 반영하고 있는가?
+    - 각 도메인 이벤트가 의미있는 수준으로 정의되었는가?
+    - 어그리게잇: Command와 Event 들을 ACID 트랜잭션 단위의 Aggregate 로 제대로 묶었는가?
+    - 기능적 요구사항과 비기능적 요구사항을 누락 없이 반영하였는가?    
+
+  - 서브 도메인, 바운디드 컨텍스트 분리
+    - 팀별 KPI 와 관심사, 상이한 배포주기 등에 따른  Sub-domain 이나 Bounded Context 를 적절히 분리하였고 그 분리 기준의 합리성이 충분히 설명되는가?
+      - 적어도 3개 이상 서비스 분리
+    - 폴리글랏 설계: 각 마이크로 서비스들의 구현 목표와 기능 특성에 따른 각자의 기술 Stack 과 저장소 구조를 다양하게 채택하여 설계하였는가?
+    - 서비스 시나리오 중 ACID 트랜잭션이 크리티컬한 Use 케이스에 대하여 무리하게 서비스가 과다하게 조밀히 분리되지 않았는가?
+  - 컨텍스트 매핑 / 이벤트 드리븐 아키텍처 
+    - 업무 중요성과  도메인간 서열을 구분할 수 있는가? (Core, Supporting, General Domain)
+    - Request-Response 방식과 이벤트 드리븐 방식을 구분하여 설계할 수 있는가?
+    - 장애격리: 서포팅 서비스를 제거 하여도 기존 서비스에 영향이 없도록 설계하였는가?
+    - 신규 서비스를 추가 하였을때 기존 서비스의 데이터베이스에 영향이 없도록 설계(열려있는 아키택처)할 수 있는가?
+    - 이벤트와 폴리시를 연결하기 위한 Correlation-key 연결을 제대로 설계하였는가?
+
+  - 헥사고날 아키텍처
+    - 설계 결과에 따른 헥사고날 아키텍처 다이어그램을 제대로 그렸는가?
+    
+- 구현
+  - [DDD] 분석단계에서의 스티커별 색상과 헥사고날 아키텍처에 따라 구현체가 매핑되게 개발되었는가?
+    - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 데이터 접근 어댑터를 개발하였는가
+    - [헥사고날 아키텍처] REST Inbound adaptor 이외에 gRPC 등의 Inbound Adaptor 를 추가함에 있어서 도메인 모델의 손상을 주지 않고 새로운 프로토콜에 기존 구현체를 적응시킬 수 있는가?
+    - 분석단계에서의 유비쿼터스 랭귀지 (업무현장에서 쓰는 용어) 를 사용하여 소스코드가 서술되었는가?
+  - Request-Response 방식의 서비스 중심 아키텍처 구현
+    - 마이크로 서비스간 Request-Response 호출에 있어 대상 서비스를 어떠한 방식으로 찾아서 호출 하였는가? (Service Discovery, REST, FeignClient)
+    - 서킷브레이커를 통하여  장애를 격리시킬 수 있는가?
+  - 이벤트 드리븐 아키텍처의 구현
+    - 카프카를 이용하여 PubSub 으로 하나 이상의 서비스가 연동되었는가?
+    - Correlation-key:  각 이벤트 건 (메시지)가 어떠한 폴리시를 처리할때 어떤 건에 연결된 처리건인지를 구별하기 위한 Correlation-key 연결을 제대로 구현 하였는가?
+    - Message Consumer 마이크로서비스가 장애상황에서 수신받지 못했던 기존 이벤트들을 다시 수신받아 처리하는가?
+    - Scaling-out: Message Consumer 마이크로서비스의 Replica 를 추가했을때 중복없이 이벤트를 수신할 수 있는가
+    - CQRS: Materialized View 를 구현하여, 타 마이크로서비스의 데이터 원본에 접근없이(Composite 서비스나 조인SQL 등 없이) 도 내 서비스의 화면 구성과 잦은 조회가 가능한가?
+
+  - 폴리글랏 플로그래밍
+    - 각 마이크로 서비스들이 하나이상의 각자의 기술 Stack 으로 구성되었는가?
+    - 각 마이크로 서비스들이 각자의 저장소 구조를 자율적으로 채택하고 각자의 저장소 유형 (RDB, NoSQL, File System 등)을 선택하여 구현하였는가?
+  - API 게이트웨이
+    - API GW를 통하여 마이크로 서비스들의 집입점을 통일할 수 있는가?
+    - 게이트웨이와 인증서버(OAuth), JWT 토큰 인증을 통하여 마이크로서비스들을 보호할 수 있는가?
+- 운영
+  - SLA 준수
+    - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
+    - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
+    - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
+    - 모니터링, 앨럿팅: 
+  - 무정지 운영 CI/CD (10)
+    - Readiness Probe 의 설정과 Rolling update을 통하여 신규 버전이 완전히 서비스를 받을 수 있는 상태일때 신규버전의 서비스로 전환됨을 siege 등으로 증명 
+    - Contract Test :  자동화된 경계 테스트를 통하여 구현 오류나 API 계약위반를 미리 차단 가능한가?
 
