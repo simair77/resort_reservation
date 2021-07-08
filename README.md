@@ -255,10 +255,12 @@ server:
 - 타 마이크로서비스의 데이터 원본에 접근없이 내 서비스의 화면 구성과 잦은 조회가 가능하게 mypage CQRS 구현하였다.
 - 모든 정보는 비동기 방식으로 발행된 이벤트(예약, 예약취소, 가능상태변경)를 수신하여 처리된다.
 
-* 예약 실행
+예약 실행
+
 ![image](https://user-images.githubusercontent.com/85722851/124925247-357ade80-e037-11eb-877b-37d53c3c71ed.png)
 
-* 카프카 메시지
+카프카 메시지
+
 ![image](https://user-images.githubusercontent.com/85722851/124926078-14ff5400-e038-11eb-86f9-5397eb39e319.png)
 ```bash
 {"eventType":"ReservationRegistered","timestamp":"20210708122821","id":null,"resortId":2,"resortName":"Seoul","resortStatus":"Confirmed","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
@@ -266,7 +268,9 @@ server:
 {"eventType":"ReservationCanceled","timestamp":"20210708122846","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Cancelled","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
 {"eventType":"ResortStatusChanged","timestamp":"20210708122846","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
 ```
-* 예약/예약취소 후 mypage 화면
+
+예약/예약취소 후 mypage 화면
+
 ![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
 
 
