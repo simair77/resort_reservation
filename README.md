@@ -294,8 +294,8 @@ public interface ResortService {
 }
 ```
 
-- 예약을 처리 하기 직전(@PrePersist)에 ResortSevice를 호출하여 서비스 상태와 Resort 세부정도르 가져온다.
-```
+- 예약을 처리 하기 직전(@PrePersist)에 ResortSevice를 호출하여 서비스 상태와 Resort 세부정보도 가져온다.
+```java
 # Reservation.java (Entity)
 
     @PrePersist
@@ -322,7 +322,7 @@ public interface ResortService {
     }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 시스템이 장애가 나면 주문도 못받는다는 것을 확인:
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 시스템이 장애로 예약을 못받는다는 것을 확인
 ![image](https://user-images.githubusercontent.com/85722851/124935086-47ad4a80-e040-11eb-99d1-eb20f47f1eb8.png)
 
 
