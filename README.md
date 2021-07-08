@@ -155,17 +155,6 @@ http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.co
 ![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
 
 
-## Kafka
-```
-{"eventType":"ResortRegistrated","timestamp":"20210708122609","id":1,"resortName":"Jeju","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
-{"eventType":"ResortRegistrated","timestamp":"20210708122632","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
-{"eventType":"ReservationRegistered","timestamp":"20210708122821","id":null,"resortId":2,"resortName":"Seoul","resortStatus":"Confirmed","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
-{"eventType":"ResortStatusChanged","timestamp":"20210708122821","id":2,"resortName":"Seoul","resortStatus":"Not Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
-{"eventType":"ReservationCanceled","timestamp":"20210708122846","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Cancelled","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
-{"eventType":"ResortStatusChanged","timestamp":"20210708122846","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
-```
-![image](https://user-images.githubusercontent.com/85722851/124926078-14ff5400-e038-11eb-86f9-5397eb39e319.png)
-
 ## Deploy
 ![image](https://user-images.githubusercontent.com/85722851/124926911-02d1e580-e039-11eb-881c-2f0822aaaee1.png)
 
@@ -176,7 +165,7 @@ http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.co
 | :--: | :--: | :--: | :--: |
 |reservation| 예약정보 관리 |8081|http://localhost:8081/reservations|
 |resort| 리조트 관리 |8082|http://localhost:8082/resorts|
-|mypage| 예매내역 조회 |8083|http://localhost:8086/mypages|
+|mypage| 예약내역 조회 |8083|http://localhost:8086/mypages|
 |gateway| gateway |8088|http://localhost:8088|
 
 ## Gateway 적용
@@ -262,99 +251,25 @@ server:
         <scope>runtime</scope>
     </dependency>
 ```
+## CQRS & Kafka
+- 타 마이크로서비스의 데이터 원본에 접근없이 내 서비스의 화면 구성과 잦은 조회가 가능하게 mypage CQRS 구현하였다.
+- 모든 정보는 비동기 방식으로 발행된 이벤트(예약, 예약취소, 가능상태변경)를 수신하여 처리된다.
 
-```java
+예약 실행
+![image](https://user-images.githubusercontent.com/85722851/124925247-357ade80-e037-11eb-877b-37d53c3c71ed.png)
 
-package fooddelivery;
-
-import javax.persistence.*;
-import org.springframework.beans.BeanUtils;
-import java.util.List;
-
-@Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long id;
-    private String orderId;
-    private Double 금액;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-    public Double get금액() {
-        return 금액;
-    }
-
-    public void set금액(Double 금액) {
-        this.금액 = 금액;
-    }
-
-}
-
-    @PrePersist
-    public void onPrePersist() throws Exception {
-        resortreservation.external.Resort resort = new resortreservation.external.Resort();
-       
-        System.out.print("#######resortId="+resort);
-        //Resort 서비스에서 Resort의 상태를 가져옴
-        resort = ReservationApplication.applicationContext.getBean(resortreservation.external.ResortService.class)
-            .getResortStatus(resortId);
-
-        // 예약 가능상태 여부에 따라 처리
-        if ("Available".equals(resort.getResortStatus())){
-            this.setResortName(resort.getResortName());
-            this.setResortPeriod(resort.getResortPeriod());
-            this.setResortPrice(resort.getResortPrice());
-            this.setResortType(resort.getResortType());
-            this.setResortStatus("Confirmed");
-            ReservationRegistered reservationRegistered = new ReservationRegistered();
-            BeanUtils.copyProperties(this, reservationRegistered);
-            reservationRegistered.publishAfterCommit();
-        } else {
-            throw new Exception("The resort is not in a usable status.");
-        }
-
-
-    }
-
+카프카 메시지
+![image](https://user-images.githubusercontent.com/85722851/124926078-14ff5400-e038-11eb-86f9-5397eb39e319.png)
 ```
-- Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (RDB or NoSQL) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다
+{"eventType":"ReservationRegistered","timestamp":"20210708122821","id":null,"resortId":2,"resortName":"Seoul","resortStatus":"Confirmed","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
+{"eventType":"ResortStatusChanged","timestamp":"20210708122821","id":2,"resortName":"Seoul","resortStatus":"Not Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
+{"eventType":"ReservationCanceled","timestamp":"20210708122846","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Cancelled","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
+{"eventType":"ResortStatusChanged","timestamp":"20210708122846","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
 ```
-package fooddelivery;
+예약/에약취소 실행 후 mypage 화면
+![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-
-public interface 결제이력Repository extends PagingAndSortingRepository<결제이력, Long>{
-}
-```
-- 적용 후 REST API 의 테스트
-```
-# app 서비스의 주문처리
-http localhost:8081/orders item="통닭"
-
-# store 서비스의 배달처리
-http localhost:8083/주문처리s orderId=1
-
-# 주문 상태 확인
-http localhost:8081/orders/1
-
-```
-
-
+  
 
 ## 동기식 호출 과 Fallback 처리
 
