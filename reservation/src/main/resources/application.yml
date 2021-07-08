@@ -37,6 +37,19 @@ logging:
     org.springframework.cloud: debug
 server:
   port: 8081
+
+feign:
+  resort:
+    url: localhost:8082
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    # 전역설정
+    default:
+      execution.isolation.thread.timeoutInMilliseconds: 610
+
 ---
 
 spring:
@@ -62,3 +75,6 @@ spring:
         event-out:
           destination: resortreservation
           contentType: application/json
+feign:
+  resort:
+    url: resort:8080
