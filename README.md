@@ -229,6 +229,32 @@ public class 결제이력 {
 
 }
 
+    @PrePersist
+    public void onPrePersist() throws Exception {
+        resortreservation.external.Resort resort = new resortreservation.external.Resort();
+       
+        System.out.print("#######resortId="+resort);
+        //Resort 서비스에서 Resort의 상태를 가져옴
+        resort = ReservationApplication.applicationContext.getBean(resortreservation.external.ResortService.class)
+            .getResortStatus(resortId);
+
+        // 예약 가능상태 여부에 따라 처리
+        if ("Available".equals(resort.getResortStatus())){
+            this.setResortName(resort.getResortName());
+            this.setResortPeriod(resort.getResortPeriod());
+            this.setResortPrice(resort.getResortPrice());
+            this.setResortType(resort.getResortType());
+            this.setResortStatus("Confirmed");
+            ReservationRegistered reservationRegistered = new ReservationRegistered();
+            BeanUtils.copyProperties(this, reservationRegistered);
+            reservationRegistered.publishAfterCommit();
+        } else {
+            throw new Exception("The resort is not in a usable status.");
+        }
+
+
+    }
+
 ```
 - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 다양한 데이터소스 유형 (RDB or NoSQL) 에 대한 별도의 처리가 없도록 데이터 접근 어댑터를 자동 생성하기 위하여 Spring Data REST 의 RestRepository 를 적용하였다
 ```
