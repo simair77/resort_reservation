@@ -117,7 +117,7 @@
 
 ## 시나리오에 따른 처리
 1. 휴양소 관리자는 휴양소를 등록한다.
-```
+```sh
 http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Jeju" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
 http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Seoul" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
 http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts
@@ -125,31 +125,31 @@ http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.co
 ![image](https://user-images.githubusercontent.com/85722851/124924911-e2a12700-e036-11eb-8ed3-6bb5d27a1f7d.png)
 
 2. 고객이 휴양소를 선택하여 예약한다.
-```
+```sh
 http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/reservations resortId=2 memberName="sim sang joon"
 ```
 ![image](https://user-images.githubusercontent.com/85722851/124925247-357ade80-e037-11eb-877b-37d53c3c71ed.png)
 
 3. 예약이 확정되어 휴양소는 예약불가 상태로 바뀐다.
-```
+```sh
 http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
 ```
 ![image](https://user-images.githubusercontent.com/85722851/124925427-62c78c80-e037-11eb-8903-d57d1f840afc.png)
 
 4. 고객이 확정된 예약을 취소할 수 있다.
-```
+```sh
 http PATCH a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/reservations/1 resortStatus="Cancelled"
 ```
 ![image](https://user-images.githubusercontent.com/85722851/124925543-81c61e80-e037-11eb-835d-9f34f1418a01.png)
 
 5. 휴양소는 예약 가능상태로 바뀐다.
-```
+```sh
 http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
 ```
 ![image](https://user-images.githubusercontent.com/85722851/124925643-9e625680-e037-11eb-90ad-24f8e5264d87.png)
 
 6. 고객은 휴양소 예약 정보를 확인 할 수 있다.
-```
+```sh
 http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/myPages
 ```
 ![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
@@ -260,7 +260,7 @@ server:
 
 -- 카프카 메시지
 ![image](https://user-images.githubusercontent.com/85722851/124926078-14ff5400-e038-11eb-86f9-5397eb39e319.png)
-```
+```bash
 {"eventType":"ReservationRegistered","timestamp":"20210708122821","id":null,"resortId":2,"resortName":"Seoul","resortStatus":"Confirmed","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
 {"eventType":"ResortStatusChanged","timestamp":"20210708122821","id":2,"resortName":"Seoul","resortStatus":"Not Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
 {"eventType":"ReservationCanceled","timestamp":"20210708122846","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Cancelled","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
