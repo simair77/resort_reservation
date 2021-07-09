@@ -668,6 +668,22 @@ kubectl apply -f  kubernetes/deployment.yml
 <img width="503" alt="image" src="https://user-images.githubusercontent.com/85722851/125044747-3cf1c480-e0d7-11eb-9c35-1091547bb099.png">
 배포기간 동안 Availability 가 100%를 유지하기 때문에 무정지 재배포가 성공한 것으로 확인됨.
 
+## Self-healing (Liveness Probe)
+- Pod는 정상적으로 작동하지만 내부의 어플리케이션이 반응이 없다면, 컨테이너는 의미가 없다.
+- 위와 같은 경우는 어플리케이션의 Liveness probe는 Pod의 상태를 체크하다가, Pod의 상태가 비정상인 경우 kubelet을 통해서 재시작한다.
+- 임의대로 Liveness probe에서 path를 잘못된 값으로 변경 후, retry 시도 확인
+```yml
+          livenessProbe:
+            httpGet:
+              path: '/actuator/fakehealth' <-- path를 잘못된 값으로 변경
+              port: 8080
+            initialDelaySeconds: 120
+            timeoutSeconds: 2
+            periodSeconds: 5
+            failureThreshold: 5
+```
+- resort Pod가 여러차례 재시작 한것을 확인할 수 있다.
+<img width="757" alt="image" src="https://user-images.githubusercontent.com/85722851/125048777-3cf3c380-e0db-11eb-99cd-97c7ebead85f.png">
 
 # 신규 개발 조직의 추가
 
