@@ -155,10 +155,6 @@ http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.co
 ```
 ![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
 
-
-## Deploy
-![image](https://user-images.githubusercontent.com/85722851/124926911-02d1e580-e039-11eb-881c-2f0822aaaee1.png)
-
 ## DDD 의 적용
 - 위 이벤트 스토밍을 통해 식별된 Micro Service 전체 5개 중 3개를 구현하였으며 그 중 mypage는 CQRS를 위한 서비스이다.
 
@@ -253,7 +249,7 @@ server:
     </dependency>
 ```
 ## CQRS & Kafka
-- 타 마이크로서비스의 데이터 원본에 접근없이 내 서비스의 화면 구성과 잦은 조회가 가능하게 mypage CQRS 구현하였다.
+- 타 마이크로서비스의 데이터 원본에 접근없이 내 서비스의 화면 구성과 잦은 조회가 가능하게 mypage에 CQRS 구현하였다.
 - 모든 정보는 비동기 방식으로 발행된 이벤트(예약, 예약취소, 가능상태변경)를 수신하여 처리된다.
 
 예약 실행
@@ -333,88 +329,92 @@ public interface ResortService {
 
 
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
-
-
-결제가 이루어진 후에 상점시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 상점 시스템의 처리를 위하여 결제주문이 블로킹 되지 않아도록 처리한다.
+- 예약이 이루어진 후에 결제시스템에 결제요청과 마이페이지시스템에 이력을 보내는 행위는 동기식이 아니라 비 동기식으로 처리하여 예약이 블로킹 되지 않아도록 처리한다.
+- 이를 위하여 예약기록을 남긴 후에 곧바로 예약완료가 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
  
-- 이를 위하여 결제이력에 기록을 남긴 후에 곧바로 결제승인이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
- 
-```
-package fooddelivery;
-
+```java
 @Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
-
+@Table(name="Reservation_table")
+public class Reservation {
  ...
-    @PrePersist
-    public void onPrePersist(){
-        결제승인됨 결제승인됨 = new 결제승인됨();
-        BeanUtils.copyProperties(this, 결제승인됨);
-        결제승인됨.publish();
+    @PostPersist
+    public void onPostPersist() throws Exception {
+        ...
+        ReservationRegistered reservationRegistered = new ReservationRegistered();
+        BeanUtils.copyProperties(this, reservationRegistered);
+        reservationRegistered.publishAfterCommit();
     }
-
 }
 ```
-- 상점 서비스에서는 결제승인 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 결제시스템과 마이페이지시스템에서는 예약완료 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다
 
-```
-package fooddelivery;
-
-...
+결제시스템(팀과제에서는 미구현)
+```java
 
 @Service
 public class PolicyHandler{
+    @Autowired PaymentRepository paymentRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
+    public void wheneverReservationRegistered_PaymentRequestPolicy(@Payload ReservationRegistered reservationRegistered){
 
-        if(결제승인됨.isMe()){
-            System.out.println("##### listener 주문정보받음 : " + 결제승인됨.toJson());
-            // 주문 정보를 받았으니, 요리를 슬슬 시작해야지..
-            
+        if(!reservationRegistered.validate()) return;
+        System.out.println("\n\n##### listener PaymentRequestPolicy : " + reservationRegistered.toJson() + "\n\n");
+        // Logic 구성 // 
+    }
+}
+```
+마이페이지시스템
+```java
+@Service
+public class MyPageViewHandler {
+
+    @Autowired
+    private MyPageRepository myPageRepository;
+
+    @StreamListener(KafkaProcessor.INPUT)
+    public void whenReservationRegistered_then_CREATE_1 (@Payload ReservationRegistered reservationRegistered) {
+        try {
+
+            if (!reservationRegistered.validate()) return;
+
+            // view 객체 생성
+            MyPage myPage = new MyPage();
+            // view 객체에 이벤트의 Value 를 set 함
+            myPage.setId(reservationRegistered.getId());
+            myPage.setMemberName(reservationRegistered.getMemberName());
+            myPage.setResortId(reservationRegistered.getResortId());
+            myPage.setResortName(reservationRegistered.getResortName());
+            myPage.setResortStatus(reservationRegistered.getResortStatus());
+            myPage.setResortType(reservationRegistered.getResortType());
+            myPage.setResortPeriod(reservationRegistered.getResortPeriod());
+            myPage.setResortPrice(reservationRegistered.getResortPrice());
+            // view 레파지 토리에 save
+            myPageRepository.save(myPage);
+        
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
-
 }
-
 ```
-실제 구현을 하자면, 카톡 등으로 점주는 노티를 받고, 요리를 마친후, 주문 상태를 UI에 입력할테니, 우선 주문정보를 DB에 받아놓은 후, 이후 처리는 해당 Aggregate 내에서 하면 되겠다.:
-  
-```
-  @Autowired 주문관리Repository 주문관리Repository;
-  
-  @StreamListener(KafkaProcessor.INPUT)
-  public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
+- 예약 시스템은 결제시스템/마이페이지 시스템과 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 결제시스템/마이시스템이 유지보수로 인해 잠시 내려간 상태라도 예야을 받는데 문제가 없다:
+```bash
+# 마이페이지 서비스는 잠시 셧다운 시키고 결제시스템은 현재 미구현
 
-      if(결제승인됨.isMe()){
-          카톡전송(" 주문이 왔어요! : " + 결제승인됨.toString(), 주문.getStoreId());
+1.리조트입력
+http localhost:8082/resorts resortName="Jeju" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
+http localhost:8082/resorts resortName="Seoul" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
 
-          주문관리 주문 = new 주문관리();
-          주문.setId(결제승인됨.getOrderId());
-          주문관리Repository.save(주문);
-      }
-  }
+2.예약입력
+http localhost:8081/reservations resortId=2 memberName="sim sang joon" 
+http localhost:8081/reservations #예약 정상 처리 확인
 
-```
+3.마이페이지서비스 기동
 
-상점 시스템은 주문/결제와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 상점시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다:
-```
-# 상점 서비스 (store) 를 잠시 내려놓음 (ctrl+c)
+4.마이페이지확인
+http localhost:8083/myPages #정상적으로 마이페이지에서 예약 이력이 확인 됨
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
-
-#주문상태 확인
-http localhost:8080/orders     # 주문상태 안바뀜 확인
-
-#상점 서비스 기동
-cd 상점
-mvn spring-boot:run
-
-#주문상태 확인
-http localhost:8080/orders     # 모든 주문의 상태가 "배송됨"으로 확인
 ```
 
 
@@ -422,9 +422,28 @@ http localhost:8080/orders     # 모든 주문의 상태가 "배송됨"으로 �
 
 ## CI/CD 설정
 
+각 구현체들은 각자의 source repository 에 구성되었고, 각 서비스별로 Docker로 빌드를 하여, Docker Hub에 등록 후 deployment.yaml, service.yml을 통해 EKS에 배포함.
+- git에서 소스 가져오기
+```bash
+git clone https://github.com/simair77/resort_reservation.git
+```
+- 각서비스별 packege, build, github push 실행
+```bash
+cd resort #서비스별 폴더로 이동
+mvn package -B -Dmaven.test.skip=true #패키지
 
-각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 GCP를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 cloudbuild.yml 에 포함되었다.
+docker build -t simair/resort:latest . #docker build
+docker push simair/resort:latest       #docker push
 
+kubectl apply -f resort/kubernetes/deployment.yml #AWS deploy 수행
+kubectl apply -f resort/kubernetes/service.yaml.  #AWS service 등록
+
+```
+- Docker Hub Image
+![image](https://user-images.githubusercontent.com/85722851/125154338-881ddd00-e194-11eb-8f76-f4b07d072313.png)
+
+- 최종 Deploy완료
+![image](https://user-images.githubusercontent.com/85722851/124926911-02d1e580-e039-11eb-881c-2f0822aaaee1.png)
 
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
 
