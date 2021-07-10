@@ -62,12 +62,12 @@
 
 
 ## AS-IS 조직 (Horizontally-Aligned)
-***수정예정
+
   ![image](https://user-images.githubusercontent.com/487999/79684144-2a893200-826a-11ea-9a01-79927d3a0107.png)
 
 ## TO-BE 조직 (Vertically-Aligned)
-***수정예정
-  ![image](https://user-images.githubusercontent.com/487999/79684159-3543c700-826a-11ea-8d5f-a3fc0c4cad87.png)
+
+  ![image](https://user-images.githubusercontent.com/85722729/125151796-b9da7800-e183-11eb-8aa1-75206e01d5d1.png)
 
 
 ## Event Storming 결과
@@ -75,25 +75,25 @@
 
 
 ### 이벤트 도출
-![image](https://user-images.githubusercontent.com/85722729/124699752-615a6f00-df26-11eb-8521-1165a4f7c0f1.png)
+![image](https://user-images.githubusercontent.com/85722729/125151784-9dd6d680-e183-11eb-85d9-283209715fbd.png)
 
 ### 액터, 커맨드 부착하여 읽기 좋게
-![image](https://user-images.githubusercontent.com/85722729/124700296-7257b000-df27-11eb-8f13-a79097b9d284.png)
+![image](https://user-images.githubusercontent.com/85722729/125151789-ad561f80-e183-11eb-9e57-05ed86763be9.png)
 
 ### 어그리게잇으로 묶기
-![image](https://user-images.githubusercontent.com/85722729/124701094-e8a8e200-df28-11eb-9192-d52b2a07cb82.png)
+![image](https://user-images.githubusercontent.com/85722729/125151790-afb87980-e183-11eb-98fa-059b849dc46e.png)
 
 ### 바운디드 컨텍스트로 묶기
 
-![image](https://user-images.githubusercontent.com/85722729/124701153-0b3afb00-df29-11eb-89ff-bfbc2dcb9b9c.png)
+![image](https://user-images.githubusercontent.com/85722729/125151791-b1823d00-e183-11eb-8575-97c163ccf14e.png)
 
 ### 폴리시 부착 (괄호는 수행주체, 폴리시 부착을 둘째단계에서 해놔도 상관 없음. 전체 연계가 초기에 드러남)
 
-![image](https://user-images.githubusercontent.com/85722729/124701347-5fde7600-df29-11eb-8f90-0c66893d32c3.png)
+![image](https://user-images.githubusercontent.com/85722729/125151793-b2b36a00-e183-11eb-814a-1fd91a06787b.png)
 
 ### 폴리시의 이동과 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
 
-![image](https://user-images.githubusercontent.com/85722729/124701398-784e9080-df29-11eb-97df-24925793ad8d.png)
+![image](https://user-images.githubusercontent.com/85722729/125151794-b47d2d80-e183-11eb-9af6-3f8d26a1eddc.png)
 
 ### 완성된 모형
 
@@ -103,7 +103,8 @@
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
-![image](https://user-images.githubusercontent.com/487999/79684772-eba9ab00-826e-11ea-9405-17e2bf39ec76.png)
+![image](https://user-images.githubusercontent.com/85722729/125151798-bcd56880-e183-11eb-876b-074a02d94116.png)
+
 
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
