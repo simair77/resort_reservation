@@ -1,10 +1,7 @@
 # 휴양소_예약시스템
 ![image](https://user-images.githubusercontent.com/85722729/124409014-75656b80-dd82-11eb-9a56-672bc90270ad.jpg)
 
-
-
 # Table of contents
-
 - [휴양소_예약시스템](#---)
   - [서비스 시나리오](#서비스-시나리오)
   - [체크포인트](#체크포인트)
@@ -20,46 +17,29 @@
     - [동기식 호출 / 서킷 브레이킹 / 장애격리](#동기식-호출-서킷-브레이킹-장애격리)
     - [오토스케일 아웃](#오토스케일-아웃)
     - [무정지 재배포](#무정지-재배포)
-  - [신규 개발 조직의 추가](#신규-개발-조직의-추가)
 
 # 서비스 시나리오
-
-
-기능적 요구사항(전체)
+- 기능적 요구사항(전체)
 1. 휴양소 관리자는 휴양소를 등록한다.
 2. 고객이 휴양소를 선택하여 예약한다.
-4. 고객이 예약한 휴양소를 결제한다.
+4. 고객이 예약한 휴양소를 결제한다.(팀과제에서 제외)
 5. 예약이 확정되어 휴양소는 예약불가 상태로 바뀐다.
-6. 바우처가 고객에게 발송된다.
+6. 바우처가 고객에게 발송된다. (팀과제에서 제외)
 7. 고객이 확정된 예약을 취소할 수 있다.
-8. 주문이 취소되면 바우처가 비활성화 된다.
+8. 주문이 취소되면 바우처가 비활성화 된다.(팀과제에서 제외)
 9. 휴양소는 예약가능 상태로 바뀐다.
 10. 고객은 휴양소 예약 정보를 확인 할 수 있다.
 
-기능적 요구사항(팀과제)
-1. 휴양소 관리자는 휴양소를 등록한다.
-2. 고객이 휴양소를 선택하여 예약한다.
-3. 예약이 확정되어 휴양소는 예약불가 상태로 바뀐다.
-4. 고객이 확정된 예약을 취소할 수 있다.
-5. 휴양소는 예약 가능상태로 바뀐다.
-6. 고객은 휴양소 예약 정보를 확인 할 수 있다.
-
-비기능적 요구사항
+- 비기능적 요구사항
 1. 트랜잭션
-    1. 결제가 되지 않은 주문건은 아예 거래가 성립되지 않아야 한다  Sync 호출 
+    1. 리조트 상태가 예약 가능상태가 아니면 아예 예약이 성립되지 않아야 한다  Sync 호출 
 1. 장애격리
-    1. 상점관리 기능이 수행되지 않더라도 주문은 365일 24시간 받을 수 있어야 한다  Async (event-driven), Eventual Consistency
-    1. 결제시스템이 과중되면 사용자를 잠시동안 받지 않고 결제를 잠시후에 하도록 유도한다  Circuit breaker, fallback
+    1. 결제/바우처/마이페이지 기능이 수행되지 않더라도 주문은 365일 24시간 받을 수 있어야 한다.  Async (event-driven), Eventual Consistency
+    1. 예약시스템이 과중되면 사용자를 잠시동안 받지 않고 잠시후에 하도록 유도한다.  Circuit breaker, fallback
 1. 성능
-    1. 고객이 자주 상점관리에서 확인할 수 있는 배달상태를 주문시스템(프론트엔드)에서 확인할 수 있어야 한다  CQRS
-    1. 배달상태가 바뀔때마다 카톡 등으로 알림을 줄 수 있어야 한다  Event driven
-
-
-
-
+    1. 고객이 자신의 예약 상태를 확인할 수 있도록 마이페이지가 제공 되어야 한다.  CQRS
 
 # 분석/설계
-
 
 ## AS-IS 조직 (Horizontally-Aligned)
 
@@ -99,7 +79,11 @@
 
 ![image](https://user-images.githubusercontent.com/85722729/124701475-9f0cc700-df29-11eb-9eb9-dc0c74df7049.png)
 
-    - View Model 추가
+- View Model 추가
+- 도메인 서열
+  - Core : reservation
+  - Supporting : resort
+  - General : payment, voucher, mypage
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
@@ -705,71 +689,7 @@ kubectl apply -f  kubernetes/deployment.yml
 - resort Pod가 여러차례 재시작 한것을 확인할 수 있다.
 <img width="757" alt="image" src="https://user-images.githubusercontent.com/85722851/125048777-3cf3c380-e0db-11eb-99cd-97c7ebead85f.png">
 
-# 신규 개발 조직의 추가
 
-  ![image](https://user-images.githubusercontent.com/487999/79684133-1d6c4300-826a-11ea-94a2-602e61814ebf.png)
-
-
-## 마케팅팀의 추가
-    - KPI: 신규 고객의 유입률 증대와 기존 고객의 충성도 향상
-    - 구현계획 마이크로 서비스: 기존 customer 마이크로 서비스를 인수하며, 고객에 음식 및 맛집 추천 서비스 등을 제공할 예정
-
-## 이벤트 스토밍 
-    ![image](https://user-images.githubusercontent.com/487999/79685356-2b729180-8273-11ea-9361-a434065f2249.png)
-
-
-## 헥사고날 아키텍처 변화 
-
-![image](https://user-images.githubusercontent.com/487999/79685243-1d704100-8272-11ea-8ef6-f4869c509996.png)
-
-## 구현  
-
-기존의 마이크로 서비스에 수정을 발생시키지 않도록 Inbund 요청을 REST 가 아닌 Event 를 Subscribe 하는 방식으로 구현. 기존 마이크로 서비스에 대하여 아키텍처나 기존 마이크로 서비스들의 데이터베이스 구조와 관계없이 추가됨. 
-
-## 운영과 Retirement
-
-Request/Response 방식으로 구현하지 않았기 때문에 서비스가 더이상 불필요해져도 Deployment 에서 제거되면 기존 마이크로 서비스에 어떤 영향도 주지 않음.
-
-* [비교] 결제 (pay) 마이크로서비스의 경우 API 변화나 Retire 시에 app(주문) 마이크로 서비스의 변경을 초래함:
-
-예) API 변화시
-```
-# Order.java (Entity)
-
-    @PostPersist
-    public void onPostPersist(){
-
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
-
-                --> 
-
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제2(pay);
-
-    }
-```
-
-예) Retire 시
-```
-# Order.java (Entity)
-
-    @PostPersist
-    public void onPostPersist(){
-
-        /**
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
-
-        **/
-    }
-```
 # 체크포인트
 
 - 분석 설계
