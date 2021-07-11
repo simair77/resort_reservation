@@ -26,7 +26,6 @@ public class Reservation {
         BeanUtils.copyProperties(this, reservationCanceled);
         reservationCanceled.publishAfterCommit();
 
-
     }
 
     @PrePersist
@@ -45,9 +44,6 @@ public class Reservation {
             this.setResortPrice(resort.getResortPrice());
             this.setResortType(resort.getResortType());
             this.setResortStatus("Confirmed");
-            ReservationRegistered reservationRegistered = new ReservationRegistered();
-            BeanUtils.copyProperties(this, reservationRegistered);
-            reservationRegistered.publishAfterCommit();
         } else {
             throw new Exception("The resort is not in a usable status.");
         }
@@ -55,6 +51,14 @@ public class Reservation {
 
     }
 
+    @PostPersist
+    public void onPostPersist() throws Exception {
+
+        ReservationRegistered reservationRegistered = new ReservationRegistered();
+        BeanUtils.copyProperties(this, reservationRegistered);
+        reservationRegistered.publishAfterCommit();
+
+    }
 
     public Long getId() {
         return id;
