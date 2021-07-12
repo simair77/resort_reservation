@@ -55,25 +55,27 @@
 
 
 ### 이벤트 도출
-![image](https://user-images.githubusercontent.com/85722729/125151784-9dd6d680-e183-11eb-85d9-283209715fbd.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240557-3c4e6d80-e325-11eb-9115-3aab0c542df2.png">
+
+### 이벤트 도출-부적격삭제
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240558-3c4e6d80-e325-11eb-9fb7-7e4ee3403089.png">
 
 ### 액터, 커맨드 부착하여 읽기 좋게
-![image](https://user-images.githubusercontent.com/85722729/125151789-ad561f80-e183-11eb-9e57-05ed86763be9.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240560-3ce70400-e325-11eb-826d-8c16ca723bc4.png">
 
 ### 어그리게잇으로 묶기
-![image](https://user-images.githubusercontent.com/85722729/125151790-afb87980-e183-11eb-98fa-059b849dc46e.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240563-3ce70400-e325-11eb-88b7-ae0f673b22c0.png">
 
 ### 바운디드 컨텍스트로 묶기
-
-![image](https://user-images.githubusercontent.com/85722729/125151791-b1823d00-e183-11eb-8575-97c163ccf14e.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240566-3d7f9a80-e325-11eb-9602-65894469d7e8.png">
 
 ### 폴리시 부착 (괄호는 수행주체, 폴리시 부착을 둘째단계에서 해놔도 상관 없음. 전체 연계가 초기에 드러남)
 
-![image](https://user-images.githubusercontent.com/85722729/125151793-b2b36a00-e183-11eb-814a-1fd91a06787b.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240549-3a84aa00-e325-11eb-96e1-7019c68498ae.png">
 
 ### 폴리시의 이동과 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
 
-![image](https://user-images.githubusercontent.com/85722729/125151794-b47d2d80-e183-11eb-9af6-3f8d26a1eddc.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240556-3bb5d700-e325-11eb-9bcf-d9c4d4d08e32.png">
 
 ### 완성된 모형
 
