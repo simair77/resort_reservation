@@ -444,7 +444,7 @@ kubectl apply -f resort/kubernetes/service.yaml.  #AWS service 등록
 * 서킷 브레이크 프레임워크 : Spring FeignClient + Hystrix 옵션을 사용
 
 - 시나리오 : 예약(reservation) -> 휴양소(resort) 예약 시 RESTful Request/Response 로 구현이 하였고, 예약 요청이 과도할 경우 circuit breaker 를 통하여 장애격리.
-- Hystrix 설정: 요청처리 쓰레드에서 처리시간이 610 밀리초가 넘어서기 시작하여 어느정도 유지되면 circuit breaker 수행됨
+Hystrix 설정: 요청처리 쓰레드에서 처리시간이 610 밀리초가 넘어서기 시작하여 어느정도 유지되면 circuit breaker 수행됨
 
 ```yaml
 # application.yml
@@ -460,7 +460,7 @@ hystrix:
 
 ```
 
-- 피호출 서비스(휴양소:resort) 의 임의 부하 처리 - 400 밀리초 ~ 620밀리초의 지연시간 부여
+피호출 서비스(휴양소:resort) 의 임의 부하 처리 - 400 밀리초 ~ 620밀리초의 지연시간 부여
 ```java
 # (resort) ResortController.java 
 
@@ -476,9 +476,7 @@ hystrix:
         }
 ```
 
-* 부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인:
-- 동시사용자 100명
-- 10초 동안 실시
+부하테스터 siege 툴을 통한 서킷 브레이커 동작 확인 : 동시사용자 100명, 10초 동안 실시
 
 ```bash
 $ siege -v -c100 -t10S -r10 --content-type "application/json" 'http://localhost:8081/reservations POST {"resortId":1, "memberName":"MK"}'
@@ -496,7 +494,6 @@ HTTP/1.1 201     4.00 secs:     343 bytes ==> POST http://localhost:8081/reserva
 HTTP/1.1 201     4.05 secs:     343 bytes ==> POST http://localhost:8081/reservations
 HTTP/1.1 201     4.05 secs:     343 bytes ==> POST http://localhost:8081/reservations
 
-
 * 요청이 과도하여 CB를 동작함 요청을 차단
 
 HTTP/1.1 500     4.07 secs:     183 bytes ==> POST http://localhost:8081/reservations
@@ -513,7 +510,6 @@ HTTP/1.1 201     4.18 secs:     343 bytes ==> POST http://localhost:8081/reserva
 HTTP/1.1 201     4.25 secs:     343 bytes ==> POST http://localhost:8081/reservations
 
 * 다시 요청이 쌓이기 시작하여 건당 처리시간이 610 밀리를 살짝 넘기기 시작 => 회로 열기 => 요청 실패처리
-
 
 HTTP/1.1 500     4.32 secs:     183 bytes ==> POST http://localhost:8081/reservations
 HTTP/1.1 500     4.32 secs:     183 bytes ==> POST http://localhost:8081/reservations
@@ -567,7 +563,6 @@ HTTP/1.1 201     4.21 secs:     345 bytes ==> POST http://localhost:8081/reserva
 HTTP/1.1 201     4.52 secs:     345 bytes ==> POST http://localhost:8081/reservations
 HTTP/1.1 500     4.36 secs:     183 bytes ==> POST http://localhost:8081/reservations
 HTTP/1.1 201     4.35 secs:     345 bytes ==> POST http://localhost:8081/reservations
-
 
 Lifting the server siege...
 Transactions:                    152 hits
