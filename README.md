@@ -78,14 +78,13 @@
 <img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125240556-3bb5d700-e325-11eb-9bcf-d9c4d4d08e32.png">
 
 ### 완성된 모형
-
-![image](https://user-images.githubusercontent.com/85722729/124701475-9f0cc700-df29-11eb-9eb9-dc0c74df7049.png)
+<img width="1113" alt="image" src="https://user-images.githubusercontent.com/85722851/125246650-0614ec00-e32d-11eb-8129-963e5dab211d.png">
 
 - View Model 추가
 - 도메인 서열
   - Core : reservation
-  - Supporting : resort
-  - General : payment, voucher, mypage
+  - Supporting : resort, mypage
+  - General : payment, voucher
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
@@ -669,6 +668,16 @@ deployment.yml 변경
                 configMapKeyRef:
                   name: resort-cm
                   key: api.resort.url
+```
+ResortService.java내용
+```java
+@FeignClient(name="resort", url="${feign.resort.url}")
+public interface ResortService {
+
+    @RequestMapping(method= RequestMethod.GET, value="/resorts/{id}", consumes = "application/json")
+    public Resort getResortStatus(@PathVariable("id") Long id);
+
+}
 ```
 생성된 Pod 상세 내용 확인
 <img width="1036" alt="image" src="https://user-images.githubusercontent.com/85722851/125245075-162bcc00-e32b-11eb-80ab-81fa57e774d8.png">
