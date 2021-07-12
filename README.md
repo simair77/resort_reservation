@@ -4,20 +4,23 @@
 # Table of contents
 - [휴양소_예약시스템](#---)
   - [서비스 시나리오](#서비스-시나리오)
-  - [체크포인트](#체크포인트)
   - [분석/설계](#분석설계)
-  - [구현:](#구현-)
-    - [시나리오에 따른 처리](#시나리오에 따른 처리)
+    - [AS-IS 조직 (Horizontally-Aligned)](#AS-IS-조직-(Horizontally-Aligned))
+    - [TO-BE 조직 (Vertically-Aligned)](#TO-BE 조직 (Vertically-Aligned))
+    - [Event Storming 결과](#Event-Storming-결과)
+  - [구현](#구현-)
+    - [시나리오에 따른 처리](#시나리오에-따른-처리)
     - [DDD 의 적용](#ddd-의-적용)
-    - [Gateway 적용](#Gateway 적용)
+    - [Gateway 적용](#Gateway-적용)
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
-    - [ CQRS & Kafka동기식 호출 과 Fallback 처리](# CQRS & Kafka동기식 호출 과 Fallback 처리)
+    - [CQRS & Kafka](#CQRS & Kafka)
+    - [동기식 호출 과 Fallback 처리](#동기식 호출 과 Fallback 처리)
     - [비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트](#비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트)
-
   - [운영](#운영)
     - [CI/CD 설정](#cicd설정)
     - [동기식 호출 / 서킷 브레이킹 / 장애격리](#동기식-호출-서킷-브레이킹-장애격리)
     - [오토스케일 아웃](#오토스케일-아웃)
+    - Zero-Downtime deploy (Readiness Probe)(#Zero-Downtime deploy (Readiness Probe))
     - [Self-healing (Liveness Probe)](# Self-healing (Liveness Probe))
     - [ConfigMap 사용](#ConfigMap 사용)
 
@@ -101,7 +104,7 @@
     - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
 
 
-# 구현:
+# 구현
 
 분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 808n 이다)
 
