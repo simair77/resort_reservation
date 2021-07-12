@@ -103,41 +103,44 @@
 ## 시나리오에 따른 처리
 1. 휴양소 관리자는 휴양소를 등록한다.
 ```sh
-http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Jeju" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
-http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Seoul" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
-http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts
+http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Jeju" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
+http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Seoul" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
+http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/resorts
 ```
-![image](https://user-images.githubusercontent.com/85722851/124924911-e2a12700-e036-11eb-8ed3-6bb5d27a1f7d.png)
+<img width="992" alt="image" src="https://user-images.githubusercontent.com/85722851/125231090-1620d180-e315-11eb-9300-1beefa54e09c.png">
 
 2. 고객이 휴양소를 선택하여 예약한다.
 ```sh
-http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/reservations resortId=2 memberName="sim sang joon"
+http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/reservations resortId=2 memberName="sim sang joon"
 ```
-![image](https://user-images.githubusercontent.com/85722851/124925247-357ade80-e037-11eb-877b-37d53c3c71ed.png)
+<img width="993" alt="image" src="https://user-images.githubusercontent.com/85722851/125231135-2769de00-e315-11eb-8b6e-f0e4711c2760.png">
+
 
 3. 예약이 확정되어 휴양소는 예약불가 상태로 바뀐다.
 ```sh
-http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
+http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
 ```
-![image](https://user-images.githubusercontent.com/85722851/124925427-62c78c80-e037-11eb-8903-d57d1f840afc.png)
+<img width="992" alt="image" src="https://user-images.githubusercontent.com/85722851/125231217-4a948d80-e315-11eb-923d-c257731b5d44.png">
+
 
 4. 고객이 확정된 예약을 취소할 수 있다.
 ```sh
-http PATCH a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/reservations/1 resortStatus="Cancelled"
+http PATCH aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/reservations/1 resortStatus="Cancelled"
 ```
-![image](https://user-images.githubusercontent.com/85722851/124925543-81c61e80-e037-11eb-835d-9f34f1418a01.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722851/125231248-5c763080-e315-11eb-9f58-0637fed3d099.png">
+
 
 5. 휴양소는 예약 가능상태로 바뀐다.
 ```sh
-http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
+http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/resorts/2
 ```
-![image](https://user-images.githubusercontent.com/85722851/124925643-9e625680-e037-11eb-90ad-24f8e5264d87.png)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722851/125231271-6c8e1000-e315-11eb-92e2-bcb2897f6449.png">
 
 6. 고객은 휴양소 예약 정보를 확인 할 수 있다.
 ```sh
-http a958945a89af4402894a5f7563b42983-1227591683.ap-northeast-2.elb.amazonaws.com:8080/myPages
+http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/myPages
 ```
-![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
+<img width="992" alt="image" src="https://user-images.githubusercontent.com/85722851/125231312-7c0d5900-e315-11eb-93bf-af4f025fc3d3.png">
 
 ## DDD 의 적용
 - 위 이벤트 스토밍을 통해 식별된 Micro Service 전체 5개 중 3개를 구현하였으며 그 중 mypage는 CQRS를 위한 서비스이다.
@@ -241,13 +244,12 @@ server:
 ![image](https://user-images.githubusercontent.com/85722851/124925247-357ade80-e037-11eb-877b-37d53c3c71ed.png)
 
 카프카 메시지
-
-![image](https://user-images.githubusercontent.com/85722851/124926078-14ff5400-e038-11eb-86f9-5397eb39e319.png)
+<img width="962" alt="image" src="https://user-images.githubusercontent.com/85722851/125224363-73625600-e308-11eb-9cd2-2dfccf0aa78f.png">
 ```bash
-{"eventType":"ReservationRegistered","timestamp":"20210708122821","id":null,"resortId":2,"resortName":"Seoul","resortStatus":"Confirmed","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
-{"eventType":"ResortStatusChanged","timestamp":"20210708122821","id":2,"resortName":"Seoul","resortStatus":"Not Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
-{"eventType":"ReservationCanceled","timestamp":"20210708122846","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Cancelled","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
-{"eventType":"ResortStatusChanged","timestamp":"20210708122846","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
+{"eventType":"ReservationRegistered","timestamp":"20210712022656","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Confirmed","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
+{"eventType":"ResortStatusChanged","timestamp":"20210712022656","id":2,"resortName":"Seoul","resortStatus":"Not Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
+{"eventType":"ReservationCanceled","timestamp":"20210712022719","id":1,"resortId":2,"resortName":"Seoul","resortStatus":"Cancelled","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0,"memberName":"sim sang joon"}
+{"eventType":"ResortStatusChanged","timestamp":"20210712022719","id":2,"resortName":"Seoul","resortStatus":"Available","resortType":"Hotel","resortPeriod":"7/23~25","resortPrice":100000.0}
 ```
 
 예약/예약취소 후 mypage 화면
