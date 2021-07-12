@@ -641,6 +641,7 @@ kubectl apply -f  kubernetes/deployment.yml
 ```
 - resort Pod가 여러차례 재시작 한것을 확인할 수 있다.
 <img width="757" alt="image" src="https://user-images.githubusercontent.com/85722851/125048777-3cf3c380-e0db-11eb-99cd-97c7ebead85f.png">
+# ConfigMap 사용
 
 
 # 체크포인트
