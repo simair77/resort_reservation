@@ -8,7 +8,7 @@
     - [AS-IS 조직 (Horizontally-Aligned)](#AS-IS-조직-Horizontally-Aligned)
     - [TO-BE 조직 (Vertically-Aligned)](#TO-BE-조직-Vertically-Aligned)
     - [Event Storming 결과](#Event-Storming-결과)
-  - [구현](#구현-)
+  - [구현](#구현)
     - [시나리오에 따른 처리](#시나리오에-따른-처리)
     - [DDD 의 적용](#ddd-의-적용)
     - [Gateway 적용](#Gateway-적용)
@@ -21,7 +21,7 @@
     - [동기식 호출 / 서킷 브레이킹 / 장애격리](#동기식-호출-서킷-브레이킹-장애격리)
     - [오토스케일 아웃](#오토스케일-아웃)
     - [Zero-Downtime deploy (Readiness Probe)](#Zero-Downtime-deploy-Readiness-Probe)
-    - [Self-healing (Liveness Probe)](# Self-healing-Liveness-Probe)
+    - [Self-healing (Liveness Probe)](#Self-healing-Liveness-Probe)
     - [ConfigMap 사용](#ConfigMap-사용)
 
     
