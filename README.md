@@ -1,5 +1,5 @@
 # 휴양소_예약시스템
-![image](https://user-images.githubusercontent.com/85722729/124409014-75656b80-dd82-11eb-9a56-672bc90270ad.jpg)
+<img width="994" alt="image" src="https://user-images.githubusercontent.com/85722729/125247482-f6e26e00-e32d-11eb-8ccd-cf83ee9cae62.jpg">
 
 # Table of contents
 - [휴양소_예약시스템](#---)
@@ -7,17 +7,21 @@
   - [체크포인트](#체크포인트)
   - [분석/설계](#분석설계)
   - [구현:](#구현-)
+    - [시나리오에 따른 처리](#시나리오에 따른 처리)
     - [DDD 의 적용](#ddd-의-적용)
+    - [Gateway 적용](#Gateway 적용)
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
-    - [폴리글랏 프로그래밍](#폴리글랏-프로그래밍)
-    - [동기식 호출 과 Fallback 처리](#동기식-호출-과-Fallback-처리)
-    - [비동기식 호출 과 Eventual Consistency](#비동기식-호출-과-Eventual-Consistency)
+    - [ CQRS & Kafka동기식 호출 과 Fallback 처리](# CQRS & Kafka동기식 호출 과 Fallback 처리)
+    - [비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트](#비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트)
+
   - [운영](#운영)
     - [CI/CD 설정](#cicd설정)
     - [동기식 호출 / 서킷 브레이킹 / 장애격리](#동기식-호출-서킷-브레이킹-장애격리)
     - [오토스케일 아웃](#오토스케일-아웃)
-    - [무정지 재배포](#무정지-재배포)
+    - [Self-healing (Liveness Probe)](# Self-healing (Liveness Probe))
+    - [ConfigMap 사용](#ConfigMap 사용)
 
+    
 # 서비스 시나리오
 - 기능적 요구사항(전체)
 1. 휴양소 관리자는 휴양소를 등록한다.
