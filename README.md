@@ -13,16 +13,16 @@
     - [DDD 의 적용](#ddd-의-적용)
     - [Gateway 적용](#Gateway-적용)
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
-    - [CQRS & Kafka](#CQRS-&-Kafka)
+    - [CQRS & Kafka](#CQRS-Kafka)
     - [동기식 호출과 Fallback 처리](#동기식-호출과-Fallback-처리)
-    - [비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트](#비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트)
+    - [비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트](#비동기식-호출-시간적-디커플링-장애격리-최종-Eventual-일관성-테스트)
   - [운영](#운영)
-    - [CI/CD 설정](#cicd설정)
+    - [CI/CD 설정](#CI-CD-설정)
     - [동기식 호출 / 서킷 브레이킹 / 장애격리](#동기식-호출-서킷-브레이킹-장애격리)
     - [오토스케일 아웃](#오토스케일-아웃)
-    - Zero-Downtime deploy (Readiness Probe)(#Zero-Downtime deploy (Readiness Probe))
-    - [Self-healing (Liveness Probe)](# Self-healing (Liveness Probe))
-    - [ConfigMap 사용](#ConfigMap 사용)
+    - [Zero-Downtime deploy (Readiness Probe)](#Zero-Downtime-deploy-Readiness-Probe)
+    - [Self-healing (Liveness Probe)](# Self-healing-Liveness-Probe)
+    - [ConfigMap 사용](#ConfigMap-사용)
 
     
 # 서비스 시나리오
