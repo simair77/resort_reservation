@@ -5,16 +5,16 @@
 - [휴양소_예약시스템](#---)
   - [서비스 시나리오](#서비스-시나리오)
   - [분석/설계](#분석설계)
-    - [AS-IS 조직 (Horizontally-Aligned)](#AS-IS-조직-(Horizontally-Aligned))
-    - [TO-BE 조직 (Vertically-Aligned)](#TO-BE 조직 (Vertically-Aligned))
+    - [AS-IS 조직 (Horizontally-Aligned)](#AS-IS-조직-Horizontally-Aligned)
+    - [TO-BE 조직 (Vertically-Aligned)](#TO-BE-조직-Vertically-Aligned)
     - [Event Storming 결과](#Event-Storming-결과)
   - [구현](#구현-)
     - [시나리오에 따른 처리](#시나리오에-따른-처리)
     - [DDD 의 적용](#ddd-의-적용)
     - [Gateway 적용](#Gateway-적용)
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
-    - [CQRS & Kafka](#CQRS & Kafka)
-    - [동기식 호출 과 Fallback 처리](#동기식 호출 과 Fallback 처리)
+    - [CQRS & Kafka](#CQRS-&-Kafka)
+    - [동기식 호출과 Fallback 처리](#동기식-호출과-Fallback-처리)
     - [비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트](#비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트)
   - [운영](#운영)
     - [CI/CD 설정](#cicd설정)
@@ -268,7 +268,7 @@ server:
 <img width="992" alt="image" src="https://user-images.githubusercontent.com/85722851/125231312-7c0d5900-e315-11eb-93bf-af4f025fc3d3.png">
 
 
-## 동기식 호출 과 Fallback 처리
+## 동기식 호출과 Fallback 처리
 
 - 분석단계에서의 조건 중 하나로 예약(reservation)->리조트상태확인(resort) 간의 호출은 동기식 일관성을 유지하는 트랜잭션으로 처리하기로 하였다. 호출 프로토콜은 이미 앞서 Rest Repository 에 의해 노출되어있는 REST 서비스를 FeignClient를 이용하여 호출하였다
 
