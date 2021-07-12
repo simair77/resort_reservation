@@ -157,6 +157,8 @@ http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.co
 다음과 같이 GateWay를 적용하였다.
 
 ```yaml
+- gateway 서비스의 application.yml
+
 server:
   port: 8088
 ---
@@ -221,6 +223,7 @@ server:
 ## 폴리글랏 퍼시스턴스
 - CQRS 를 위한 mypage 서비스만 DB를 구분하여 적용함. 인메모리 DB인 hsqldb 사용.
 ```
+- maypage 서비스의 pom.xml
 <!-- 
     <dependency>
         <groupId>com.h2database</groupId>
@@ -241,7 +244,7 @@ server:
 
 예약 실행
 
-![image](https://user-images.githubusercontent.com/85722851/124925247-357ade80-e037-11eb-877b-37d53c3c71ed.png)
+<img width="993" alt="image" src="https://user-images.githubusercontent.com/85722851/125231135-2769de00-e315-11eb-8b6e-f0e4711c2760.png">
 
 카프카 메시지
 <img width="962" alt="image" src="https://user-images.githubusercontent.com/85722851/125224363-73625600-e308-11eb-9cd2-2dfccf0aa78f.png">
@@ -254,7 +257,7 @@ server:
 
 예약/예약취소 후 mypage 화면
 
-![image](https://user-images.githubusercontent.com/85722851/124925795-c81b7d80-e037-11eb-912e-128c63f7d9d2.png)
+<img width="992" alt="image" src="https://user-images.githubusercontent.com/85722851/125231312-7c0d5900-e315-11eb-93bf-af4f025fc3d3.png">
 
 
 ## 동기식 호출 과 Fallback 처리
@@ -303,7 +306,7 @@ public interface ResortService {
 ```
 
 - 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 시스템이 장애로 예약을 못받는다는 것을 확인
-![image](https://user-images.githubusercontent.com/85722851/124935086-47ad4a80-e040-11eb-99d1-eb20f47f1eb8.png)
+<img width="1019" alt="image" src="https://user-images.githubusercontent.com/85722851/125232225-2174fc80-e317-11eb-9186-98995cf27f97.png">
 
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
@@ -423,10 +426,10 @@ kubectl apply -f resort/kubernetes/service.yaml.  #AWS service 등록
 
 ```
 - Docker Hub Image
-![image](https://user-images.githubusercontent.com/85722851/125154338-881ddd00-e194-11eb-8f76-f4b07d072313.png)
+<img width="953" alt="image" src="https://user-images.githubusercontent.com/85722851/125232400-80d30c80-e317-11eb-846c-cbd5b0ded2ba.png">
 
 - 최종 Deploy완료
-![image](https://user-images.githubusercontent.com/85722851/124926911-02d1e580-e039-11eb-881c-2f0822aaaee1.png)
+<img width="895" alt="image" src="https://user-images.githubusercontent.com/85722851/125232490-b4ae3200-e317-11eb-998c-88e5833866c7.png">
 
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
 
