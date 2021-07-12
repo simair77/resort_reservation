@@ -9,7 +9,7 @@
     - [TO-BE 조직 (Vertically-Aligned)](#TO-BE-조직-Vertically-Aligned)
     - [Event Storming 결과](#Event-Storming-결과)
   - [구현](#구현)
-    - [시나리오에 따른 처리](#시나리오에-따른-처리)
+    - [시나리오 흐름 테스트](#시나리오-흐름-테스트)
     - [DDD 의 적용](#ddd-의-적용)
     - [Gateway 적용](#Gateway-적용)
     - [폴리글랏 퍼시스턴스](#폴리글랏-퍼시스턴스)
@@ -108,7 +108,7 @@
 
 분석/설계 단계에서 도출된 헥사고날 아키텍처에 따라, 각 BC별로 대변되는 마이크로 서비스들을 스프링부트로 구현하였다. 구현한 각 서비스를 로컬에서 실행하는 방법은 아래와 같다 (각자의 포트넘버는 8081 ~ 808n 이다)
 
-## 시나리오에 따른 처리
+## 시나리오 흐름 테스트
 1. 휴양소 관리자는 휴양소를 등록한다.
 ```sh
 http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.com:8080/resorts resortName="Jeju" resortType="Hotel" resortPrice=100000 resortStatus="Available" resortPeriod="7/23~25"
@@ -157,7 +157,7 @@ http aa9c6a809425d45b69b139edc5237d53-1942883713.ap-northeast-2.elb.amazonaws.co
 | :--: | :--: | :--: | :--: |
 |reservation| 예약정보 관리 |8081|http://localhost:8081/reservations|
 |resort| 리조트 관리 |8082|http://localhost:8082/resorts|
-|mypage| 예약내역 조회 |8083|http://localhost:8086/mypages|
+|mypage| 예약내역 조회 |8083|http://localhost:8083/mypages|
 |gateway| gateway |8088|http://localhost:8088|
 
 ## Gateway 적용
